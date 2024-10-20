@@ -1,8 +1,9 @@
-name: 'Amplify push'
+name: 'Amplify PR Closed'
 on:
-  push:
+  pull_request_target:
     branches:
       - staging
+    types: [closed]
 
 jobs:
   deploy:
@@ -13,17 +14,18 @@ jobs:
     - name: set branchname env
       id: setenvname
       run: |
-        # Get the branch name from the current commit (which is dev after merging)
-        echo "##[set-output name=setbranchname;]$(echo ${GITHUB_REF##*/})"
+        # use GITHUB_HEAD_REF that is set to PR source branch
+        echo "##[set-output name=setbranchname;]$(echo ${GITHUB_HEAD_REF})"
 
-    - name: deploy PR preview
+    - name: cleanup PR preview branch
       uses: yinlinchen/amplify-preview-actions@master
       with:
         branch_name: ${{ steps.setenvname.outputs.setbranchname }}
-        amplify_command: deploy
+        amplify_command: delete
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         AmplifyAppId: ${{ secrets.AMPLIFY_ID_STAGING }}
         AWS_REGION: ${{ secrets.AWS_BUCKET_REGION }}
+
