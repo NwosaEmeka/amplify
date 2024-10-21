@@ -8,36 +8,13 @@ env:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    outputs:
-      revert_cmd: ${{ steps.generate-revert-command.outputs.revert_cmd }}
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: ${{secrets.AWS_BUCKET_REGION}}
+      AWS_DEFAULT_OUTPUT: json
+      BRANCH: ${{ steps.extract_branch.outputs.branch }}
     steps:
-      - uses: actions/checkout@v3
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_BUCKET_REGION }}
-      - name: Extract branch name
-        shell: bash
-        run: |
-          echo "Running on branch ${{ github.ref }}"
-          if [ "${{ github.ref }}" = "refs/heads/master" ]; then
-            echo "branch=master" >> $GITHUB_OUTPUT
-          else
-            echo "branch=staging" >> $GITHUB_OUTPUT
-          fi
-        id: extract_branch
-      - name: Generate revert command
-        id: generate-revert-command
-        env:
-          BRANCH: ${{ steps.extract_branch.outputs.branch }}
-        run: |
-          aws amplify list-jobs --app-id $APP_ID --branch-name $BRANCH --max-items 1 | jq '.jobSummaries[0]' | echo
-          JOB_ID=$(aws amplify list-jobs --app-id $APP_ID --branch-name $BRANCH --max-items 1 | jq '.jobSummaries[0].jobId')
-          echo "revert_cmd=aws amplify start-job --app-id $APP_ID --branch-name $BRANCH --job-id $JOB_ID --job-type RETRY" >> $GITHUB_OUTPUT
+      - uses: actions/checkout@v2
       - name: Deploy
-        shell: bash
-        env:
-          BRANCH: ${{ steps.extract_branch.outputs.branch }}
         run: ./scripts/amplify-deploy.sh $APP_ID $BRANCH
