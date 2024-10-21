@@ -1,0 +1,15 @@
+{
+  "staging": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-landingpage-staging-146b8-authRole",
+      "UnauthRoleArn": "arn:aws:iam::782621581633:role/amplify-landingpage-staging-146b8-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::782621581633:role/amplify-landingpage-staging-146b8-authRole",
+      "Region": "ap-southeast-1",
+      "DeploymentBucketName": "amplify-landingpage-staging-146b8-deployment",
+      "UnauthRoleName": "amplify-landingpage-staging-146b8-unauthRole",
+      "StackName": "amplify-landingpage-staging-146b8",
+      "StackId": "arn:aws:cloudformation:ap-southeast-1:782621581633:stack/amplify-landingpage-staging-146b8/a79f3cf0-8fdd-11ef-855c-06e3559d509f",
+      "AmplifyAppId": "d1bskjoqvnnv8g"
+    }
+  }
+}
