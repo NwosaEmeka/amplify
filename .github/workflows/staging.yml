@@ -4,7 +4,7 @@ on:
     branches:
       - staging
 env:
-  APP_ID: ${{ secrets.AMPLIFY_ID_STAGING }}
+  APP_ID: d3u69tpukpw2yo
 jobs:
   deploy:
     runs-on: ubuntu-latest
