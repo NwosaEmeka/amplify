@@ -3,8 +3,6 @@ on:
   push:
     branches:
       - staging
-env:
-  APP_ID: ${{secrets.AMPLIFY_ID_STAGING}}
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -16,4 +14,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Deploy
+        env:
+          APP_ID: ${{secrets.AMPLIFY_ID_STAGING}}
         run: ./scripts/amplify-deploy.sh $APP_ID staging
