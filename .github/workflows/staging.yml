@@ -29,4 +29,4 @@ jobs:
         run: amplify pull --appId ${{ secrets.AMPLIFY_ID_STAGING }} --envName staging --yes
 
       - name: Deploy to Amplify
-        run: amplify publish --yes
+        run: amplify push --yes
