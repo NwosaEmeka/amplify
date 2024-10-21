@@ -16,6 +16,4 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Deploy
-        env:
-          BRANCH: ${{ steps.extract_branch.outputs.branch }}
-        run: ./scripts/amplify-deploy.sh $APP_ID $BRANCH
+        run: ./scripts/amplify-deploy.sh $APP_ID staging
