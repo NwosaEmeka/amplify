@@ -1,32 +1,45 @@
-name: "Amplify push"
+name: Deploy frontend to AWS Amplify
 on:
-  push:
-    branches:
-      - staging
-
+  workflow_call:
+    outputs:
+      revert_command:
+        description: "Command to revert frontend deployment"
+        value: ${{ jobs.deploy-frontend.outputs.revert_cmd }}
+env:
+  APP_ID: ${{ secrets.AMPLIFY_ID_STAGING }}
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    outputs:
+      revert_cmd: ${{ steps.generate-revert-command.outputs.revert_cmd }}
     steps:
-      - uses: actions/checkout@v2
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: "14"
-
-      - name: Install Amplify CLI
-        run: npm install -g @aws-amplify/cli
-
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
+      - uses: actions/checkout@v3
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_BUCKET_REGION }}
-
-      - name: Amplify Pull
-        run: amplify pull --appId ${{ secrets.AMPLIFY_ID_STAGING }} --envName staging --yes
-
-      - name: Deploy to Amplify
-        run: amplify push --yes
+      - name: Extract branch name
+        shell: bash
+        run: |
+          echo "Running on branch ${{ github.ref }}"
+          if [ "${{ github.ref }}" = "refs/heads/master" ]; then
+            echo "branch=master" >> $GITHUB_OUTPUT
+          else
+            echo "branch=staging" >> $GITHUB_OUTPUT
+          fi
+        id: extract_branch
+      - name: Generate revert command
+        id: generate-revert-command
+        env:
+          BRANCH: ${{ steps.extract_branch.outputs.branch }}
+        run: |
+          aws amplify list-jobs --app-id $APP_ID --branch-name $BRANCH --max-items 1 | jq '.jobSummaries[0]' | echo
+          JOB_ID=$(aws amplify list-jobs --app-id $APP_ID --branch-name $BRANCH --max-items 1 | jq '.jobSummaries[0].jobId')
+          echo "revert_cmd=aws amplify start-job --app-id $APP_ID --branch-name $BRANCH --job-id $JOB_ID --job-type RETRY" >> $GITHUB_OUTPUT
+      - name: Deploy
+        shell: bash
+        env:
+          BRANCH: ${{ steps.extract_branch.outputs.branch }}
+        run: ./scripts/amplify-deploy.sh $APP_ID $BRANCH
