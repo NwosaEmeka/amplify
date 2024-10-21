@@ -1,0 +1,15 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-emeka-dev-266f3-authRole",
+      "UnauthRoleArn": "arn:aws:iam::782621581633:role/amplify-emeka-dev-266f3-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::782621581633:role/amplify-emeka-dev-266f3-authRole",
+      "Region": "ap-southeast-1",
+      "DeploymentBucketName": "amplify-emeka-dev-266f3-deployment",
+      "UnauthRoleName": "amplify-emeka-dev-266f3-unauthRole",
+      "StackName": "amplify-emeka-dev-266f3",
+      "StackId": "arn:aws:cloudformation:ap-southeast-1:782621581633:stack/amplify-emeka-dev-266f3/c83dcc20-8f55-11ef-986c-0ae0dad98071",
+      "AmplifyAppId": "d2vulv0noqc9uc"
+    }
+  }
+}
