@@ -16,4 +16,4 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Deploy
-        run: ./scripts/amplify-deploy.sh $APP_ID staging
+        run: ./scripts/amplify-deploy.sh d3u69tpukpw2yo staging
