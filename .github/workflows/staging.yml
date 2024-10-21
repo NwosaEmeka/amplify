@@ -13,8 +13,7 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_DEFAULT_REGION: ${{secrets.AWS_BUCKET_REGION}}
       AWS_DEFAULT_OUTPUT: json
-      BRANCH: ${{ steps.extract_branch.outputs.branch }}
     steps:
       - uses: actions/checkout@v2
       - name: Deploy
-        run: ./scripts/amplify-deploy.sh $APP_ID $BRANCH
+        run: ./scripts/amplify-deploy.sh $APP_ID staging
