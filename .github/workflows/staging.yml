@@ -1,4 +1,4 @@
-name: 'Amplify push'
+name: "Amplify push"
 on:
   push:
     branches:
@@ -10,20 +10,23 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Set branch name
-        id: setenvname
-        run: |
-          # Get the branch name from the current commit (which is dev after merging)
-          echo "##[set-output name=setbranchname;]$(echo ${GITHUB_REF##*/})"
-
-      - name: Deploy to existing Amplify branch
-        uses: yinlinchen/amplify-preview-actions@master
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
         with:
-          branch_name: ${{ steps.setenvname.outputs.setbranchname }}
-          amplify_command: deploy
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          AmplifyAppId: ${{ secrets.AMPLIFY_ID_STAGING }}
-          AWS_REGION: ${{ secrets.AWS_BUCKET_REGION }}
+          node-version: "14"
+
+      - name: Install Amplify CLI
+        run: npm install -g @aws-amplify/cli
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_BUCKET_REGION }}
+
+      - name: Amplify Pull
+        run: amplify pull --appId ${{ secrets.AMPLIFY_ID_STAGING }} --envName staging --yes
+
+      - name: Deploy to Amplify
+        run: amplify publish --yes
