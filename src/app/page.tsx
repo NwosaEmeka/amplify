@@ -23,6 +23,7 @@ export default function Home() {
           <li>Save and see your changes instantly.</li>
           <li>Did it deploy to staging?</li>
           <li>Test PR template, did it work?</li>
+          <li>did auto deployment work?</li>
         </ol>
 
         <div className="flex flex-col items-center gap-4 sm:flex-row">
