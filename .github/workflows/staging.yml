@@ -1,10 +1,8 @@
 name: Deploy frontend to AWS Amplify
 on:
-  workflow_call:
-    outputs:
-      revert_command:
-        description: "Command to revert frontend deployment"
-        value: ${{ jobs.deploy-frontend.outputs.revert_cmd }}
+  push:
+    branches:
+      - staging
 env:
   APP_ID: ${{ secrets.AMPLIFY_ID_STAGING }}
 jobs:
