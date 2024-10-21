@@ -1,10 +1,10 @@
-name: Deploy frontend to AWS Amplify
+name: Deploy to AWS Amplify
 on:
   push:
     branches:
       - staging
 env:
-  APP_ID: d3u69tpukpw2yo
+  APP_ID: ${{secrets.AMPLIFY_ID_STAGING}}
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -16,4 +16,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Deploy
-        run: ./scripts/amplify-deploy.sh d3u69tpukpw2yo staging
+        env:
+          BRANCH: ${{ steps.extract_branch.outputs.branch }}
+        run: ./scripts/amplify-deploy.sh $APP_ID $BRANCH

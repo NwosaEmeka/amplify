@@ -24,6 +24,7 @@ export default function Home() {
           <li>Did it deploy to staging?</li>
           <li>Test PR template, did it work?</li>
           <li>did auto deployment work?</li>
+          <li>Did github action finally work? ehhh</li>
         </ol>
 
         <div className="flex flex-col items-center gap-4 sm:flex-row">
